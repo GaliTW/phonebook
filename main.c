@@ -8,7 +8,7 @@
 
 #define DICT_FILE "./dictionary/words.txt"
 
-static double diff_in_second(struct timespec t1, struct timespec t2)
+static struct timespec diffTime(struct timespec t1, struct timespec t2)
 {
     struct timespec diff;
     if (t2.tv_nsec-t1.tv_nsec < 0) {
@@ -18,7 +18,7 @@ static double diff_in_second(struct timespec t1, struct timespec t2)
         diff.tv_sec  = t2.tv_sec - t1.tv_sec;
         diff.tv_nsec = t2.tv_nsec - t1.tv_nsec;
     }
-    return (diff.tv_sec + diff.tv_nsec / 1000000000.0);
+    return diff;
 }
 
 int main(int argc, char *argv[])
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     int i = 0;
     char line[MAX_LAST_NAME_SIZE];
     struct timespec start, end;
-    double cpu_time1, cpu_time2;
+    struct timespec cpu_time1, cpu_time2;
 
     /* check file opening */
     fp = fopen(DICT_FILE, "r");
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
         append(line, book);
     }
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time1 = diff_in_second(start, end);
+    cpu_time1 = diffTime(start, end);
 
     /* close file as soon as possible */
     fclose(fp);
@@ -72,10 +72,10 @@ int main(int argc, char *argv[])
     clock_gettime(CLOCK_REALTIME, &start);
     findName(input, book);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time2 = diff_in_second(start, end);
+    cpu_time2 = diffTime(start, end);
 
-    printf("execution time of append() : %lf sec\n", cpu_time1);
-    printf("execution time of findName() : %lf sec\n", cpu_time2);
+    printf("execution time of append() : %ld.%09ld sec\n", (long)cpu_time1.tv_sec, cpu_time1.tv_nsec);
+    printf("execution time of findName() : %ld.%09ld sec\n", (long)cpu_time2.tv_sec, cpu_time2.tv_nsec);
 
     /* FIXME: release all allocated entries */
     free(book);
