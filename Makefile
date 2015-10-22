@@ -1,21 +1,19 @@
 CC ?= gcc
 CFLAGS_common ?= -O0 -Wall -std=gnu99
 
-EXEC = phonebook_orig phonebook_opt
+SRCS_common = main.c
+SRCS_FILES = $(wildcard *.c)
+EXEC = $(basename $(notdir $(filter-out $(SRCS_common), $(SRCS_FILES))))
 all: $(EXEC)
 
 SRCS_common = main.c
 
-phonebook_orig: $(SRCS_common) phonebook_orig.c phonebook_orig.h
+phonebook_%: $(SRCS_common) phonebook_%.c phonebook_%.h
 	$(CC) $(CFLAGS_common) -DIMPL="\"$@.h\"" -o $@ \
 		$(SRCS_common) $@.c
 
-phonebook_opt: $(SRCS_common) phonebook_opt.c phonebook_opt.h
-	$(CC) $(CFLAGS_common) -DIMPL="\"$@.h\"" -o $@ \
-		$(SRCS_common) $@.c
-
-run: $(EXEC)
-	watch -d -t ./phonebook_orig
+run_%: phonebook_%
+	watch -d -t ./$<
 
 clean:
 	$(RM) $(EXEC) *.o perf.*
