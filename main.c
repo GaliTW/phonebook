@@ -36,15 +36,13 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    /* build the entry */
-    entry *pHead, *e;
-    pHead = (entry *) malloc(sizeof(entry));
+    /* create the phonebook */
+    phonebook *book = create();
     printf("size of entry : %lu bytes\n", sizeof(entry));
-    e = pHead;
-    e->pNext = NULL;
+    printf("size of phonebook : %lu bytes\n", sizeof(phonebook));
 
 #if defined(__GNUC__)
-    __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
+    __builtin___clear_cache((char *) book->pHead, (char *) book->pHead + sizeof(entry));
 #endif
     clock_gettime(CLOCK_REALTIME, &start);
     while (fgets(line, sizeof(line), fp)) {
@@ -52,7 +50,7 @@ int main(int argc, char *argv[])
             i++;
         line[i - 1] = '\0';
         i = 0;
-        e = append(line, e);
+        append(line, book);
     }
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time1 = diff_in_second(start, end);
@@ -60,22 +58,19 @@ int main(int argc, char *argv[])
     /* close file as soon as possible */
     fclose(fp);
 
-    e = pHead;
-
     /* the givn last name to find */
     char input[MAX_LAST_NAME_SIZE] = "zyxel";
-    e = pHead;
 
-    assert(findName(input, e) &&
+    assert(findName(input, book) &&
            "Did you implement findName() in " IMPL "?");
-    assert(0 == strcmp(findName(input, e)->lastName, "zyxel"));
+    assert(0 == strcmp(findName(input, book)->lastName, "zyxel"));
 
 #if defined(__GNUC__)
-    __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
+    __builtin___clear_cache((char *) book->pHead, (char *) book->pHead + sizeof(entry));
 #endif
     /* compute the execution time */
     clock_gettime(CLOCK_REALTIME, &start);
-    findName(input, e);
+    findName(input, book);
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time2 = diff_in_second(start, end);
 
@@ -83,7 +78,7 @@ int main(int argc, char *argv[])
     printf("execution time of findName() : %lf sec\n", cpu_time2);
 
     /* FIXME: release all allocated entries */
-    free(pHead);
+    free(book);
 
     return 0;
 }

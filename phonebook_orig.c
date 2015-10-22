@@ -3,26 +3,43 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "phonebook_orig.h"
+#include IMPL
 
 /* original version */
-entry *findName(char lastname[], entry *pHead)
+entry *mallocEntry()
 {
-    while (pHead != NULL) {
-        if (strcasecmp(lastname, pHead->lastName) == 0)
-            return pHead;
-        pHead = pHead->pNext;
+    entry *e = (entry *) malloc(sizeof(entry));
+    e->pNext = NULL;
+    return e;
+}
+
+phonebook *create()
+{
+    phonebook *book = (phonebook *) malloc(sizeof(phonebook));
+    book->pHead = book->pEnd = mallocEntry();
+    return book;
+}
+
+entry *findName(char lastname[], phonebook *book)
+{
+    if (book == NULL)
+        return NULL;
+
+    entry* e = book->pHead;
+    while (e->pNext != NULL) {
+        if (strcmp(lastname, e->lastName) == 0)
+            return e;
+        e = e->pNext;
     }
     return NULL;
 }
 
-entry *append(char lastName[], entry *e)
+entry *append(char lastName[], phonebook *book)
 {
     /* allocate memory for the new entry and put lastName */
-    e->pNext = (entry *) malloc(sizeof(entry));
-    e = e->pNext;
-    strcpy(e->lastName, lastName);
-    e->pNext = NULL;
+    entry *e = mallocEntry();
+    strcpy(book->pEnd->lastName, lastName);
+    book->pEnd = book->pEnd->pNext = e;
 
     return e;
 }
