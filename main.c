@@ -58,19 +58,22 @@ int main(int argc, char *argv[])
     /* close file as soon as possible */
     fclose(fp);
 
-    /* the givn last name to find */
-    char input[MAX_LAST_NAME_SIZE] = "zyxel";
-
-    assert(findName(input, book) &&
+    /* the given last name to find */
+    char input[4][MAX_LAST_NAME_SIZE] = { "zuzana", "sonja", "alisun", "roman" };
+    assert(findName(input[0], book) &&
            "Did you implement findName() in " IMPL "?");
-    assert(0 == strcmp(findName(input, book)->lastName, "zyxel"));
+    assert(0 == strcmp(findName(input[0], book)->lastName, "zuzana"));
+    assert(0 == strcmp(findName(input[1], book)->lastName, "sonja"));
+    assert(0 == strcmp(findName(input[2], book)->lastName, "alisun"));
+    assert(0 == strcmp(findName(input[3], book)->lastName, "roman"));
 
 #if defined(__GNUC__)
     __builtin___clear_cache((char *) book->pHead, (char *) book->pHead + sizeof(entry));
 #endif
     /* compute the execution time */
     clock_gettime(CLOCK_REALTIME, &start);
-    findName(input, book);
+    for (int i = 0; i < 4; ++i)
+        findName(input[i], book);
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time2 = diffTime(start, end);
 
