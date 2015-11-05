@@ -27,3 +27,8 @@ entry *append(char lastName[], phonebook *book)
 {
     return NULL;
 }
+
+void release(phonebook *book) 
+{
+    
+}

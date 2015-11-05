@@ -80,8 +80,7 @@ int main(int argc, char *argv[])
     printf("execution time of append() : %ld.%09ld sec\n", (long)cpu_time1.tv_sec, cpu_time1.tv_nsec);
     printf("execution time of findName() : %ld.%09ld sec\n", (long)cpu_time2.tv_sec, cpu_time2.tv_nsec);
 
-    /* FIXME: release all allocated entries */
-    free(book);
+    release(book);
 
     return 0;
 }

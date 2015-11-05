@@ -44,3 +44,16 @@ entry *append(char lastName[], phonebook *book)
 
     return e;
 }
+
+void release(phonebook *book) 
+{
+    for (entry* walk = book->pHead, *tmp; walk != NULL; )
+    {
+        tmp = walk;
+        walk = walk->pNext;
+        free(tmp->detail);
+        free(tmp);
+    }
+    book->pHead = book->pEnd = NULL;
+    free(book);
+}

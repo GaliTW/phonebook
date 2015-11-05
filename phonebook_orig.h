@@ -26,5 +26,6 @@ typedef struct __PHONE_BOOK {
 phonebook *create();
 entry *findName(char lastname[], phonebook *book);
 entry *append(char lastName[], phonebook *book);
+void release(phonebook *book);
 
 #endif

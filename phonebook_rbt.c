@@ -155,5 +155,23 @@ entry *append(char lastName[], phonebook *book)
     return e;
 }
 
+void _release(entry *e)
+{
+    if (e != NULL)
+    {
+        _release(e->pLeft);
+        _release(e->pRight);
+        e->pLeft = e->pRight = NULL;
+        free(e);
+    }
+}
+
+void release(phonebook *book) 
+{
+    _release(book->pHead);
+    book->pHead = NULL;
+    free(book);
+}
+
 #undef grandparent
 #undef uncle
